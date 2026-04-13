@@ -11,6 +11,8 @@ struct RootTabView: View {
                 .tabItem { Label("Projects", systemImage: "folder") }
             RoutineListView()
                 .tabItem { Label("Routines", systemImage: "sun.and.horizon") }
+            BrainDumpView()
+                .tabItem { Label("Brain", systemImage: "brain.head.profile") }
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
         }

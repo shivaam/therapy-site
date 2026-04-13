@@ -11,6 +11,8 @@ final class AppStore: ObservableObject {
     @Published var projects: [Project]
     @Published var routines: [Routine]
     @Published var settings: AppSettings
+    @Published var scratchpad: [ScratchpadEntry]
+    @Published var parkingLot: [ParkingLotItem]
     @Published var timerState: TimerState = .idle
     /// The preset currently attached to the running/paused session, if any.
     @Published var activePreset: Preset?
@@ -39,11 +41,15 @@ final class AppStore: ObservableObject {
             self.projects = snap.projects
             self.routines = snap.routines
             self.settings = snap.settings
+            self.scratchpad = snap.scratchpad ?? []
+            self.parkingLot = snap.parkingLot ?? []
         } else {
             self.presets = Preset.defaults
             self.projects = []
             self.routines = Routine.defaults
             self.settings = AppSettings()
+            self.scratchpad = []
+            self.parkingLot = []
         }
     }
 
@@ -138,6 +144,9 @@ final class AppStore: ObservableObject {
         var projects: [Project]
         var routines: [Routine]
         var settings: AppSettings
+        /// Optional for backward compat with state.json files from earlier builds.
+        var scratchpad: [ScratchpadEntry]?
+        var parkingLot: [ParkingLotItem]?
     }
 
     private func scheduleSave() {
@@ -153,9 +162,52 @@ final class AppStore: ObservableObject {
         let snap = Snapshot(presets: presets,
                             projects: projects,
                             routines: routines,
-                            settings: settings)
+                            settings: settings,
+                            scratchpad: scratchpad,
+                            parkingLot: parkingLot)
         guard let data = try? JSONEncoder().encode(snap) else { return }
         try? data.write(to: storageURL, options: .atomic)
+    }
+
+    // MARK: - Scratchpad
+
+    func appendScratchpad(_ text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        scratchpad.insert(ScratchpadEntry(text: trimmed), at: 0)
+        scheduleSave()
+    }
+
+    func deleteScratchpad(_ entry: ScratchpadEntry) {
+        scratchpad.removeAll { $0.id == entry.id }
+        scheduleSave()
+    }
+
+    // MARK: - Parking lot
+
+    func addParkingLotItem(_ text: String) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        parkingLot.insert(ParkingLotItem(text: trimmed), at: 0)
+        scheduleSave()
+    }
+
+    func toggleParkingLotItem(_ item: ParkingLotItem) {
+        guard let idx = parkingLot.firstIndex(where: { $0.id == item.id }) else { return }
+        parkingLot[idx].done.toggle()
+        scheduleSave()
+    }
+
+    func deleteParkingLotItem(_ item: ParkingLotItem) {
+        parkingLot.removeAll { $0.id == item.id }
+        scheduleSave()
+    }
+
+    /// Pull a parked item into the current session's task list. Common ADHD
+    /// move: "I parked this yesterday, now I actually want to work on it."
+    func promoteParkingLotItemToSession(_ item: ParkingLotItem) {
+        sessionTasks.append(RoutineTask(text: item.text))
+        deleteParkingLotItem(item)
     }
 }
 

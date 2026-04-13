@@ -4,6 +4,7 @@ struct ActiveSessionView: View {
     @EnvironmentObject var store: AppStore
     @EnvironmentObject var engine: TimerEngine
     @EnvironmentObject var audio: AmbientAudio
+    @State private var showingCapture = false
 
     var body: some View {
         ScrollView {
@@ -21,6 +22,26 @@ struct ActiveSessionView: View {
                 }
             }
             .padding()
+        }
+        .overlay(alignment: .bottomTrailing) {
+            // Always-there brain-dump button so a random thought never has an
+            // excuse to turn into a distraction.
+            Button {
+                showingCapture = true
+            } label: {
+                Image(systemName: "brain.head.profile")
+                    .font(.title2)
+                    .padding(16)
+                    .background(Color.accentColor, in: Circle())
+                    .foregroundStyle(.white)
+                    .shadow(radius: 6, y: 2)
+            }
+            .padding()
+            .accessibilityLabel("Brain dump")
+        }
+        .sheet(isPresented: $showingCapture) {
+            QuickCaptureSheet()
+                .presentationDetents([.medium, .large])
         }
     }
 
