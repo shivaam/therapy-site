@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pomodoro Focus — Mockups</title>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --panel: #14171c;
+    --panel-2: #1b1f26;
+    --text: #e8ebee;
+    --muted: #8a929b;
+    --accent: #4f8ef7;
+    --green: #6cc04a;
+    --red: #f76c6c;
+    --amber: #f7b84f;
+    --purple: #b066f7;
+    --ring-track: rgba(255,255,255,0.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 14px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: #05070a;
+    color: var(--text);
+    padding: 40px 20px 80px;
+  }
+  h1 { font-weight: 600; letter-spacing: -0.02em; }
+  h2 {
+    margin: 48px 0 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .caption {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 280px;
+  }
+  .phone-wrap { display: flex; flex-direction: column; align-items: center; }
+
+  /* iPhone frame */
+  .phone {
+    width: 320px;
+    height: 660px;
+    background: var(--bg);
+    border-radius: 44px;
+    border: 2px solid #23272e;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    padding: 18px 14px 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .phone::before {
+    content: "";
+    position: absolute;
+    top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 22px;
+    background: #000;
+    border-radius: 14px;
+  }
+  .status {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--muted);
+    padding: 4px 10px 14px;
+  }
+
+  /* Watch frame */
+  .watch {
+    width: 200px;
+    height: 240px;
+    background: #000;
+    border-radius: 44px;
+    padding: 22px 18px;
+    border: 2px solid #1a1d22;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  }
+  .watch .inner {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    border-radius: 24px;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .tabbar {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: rgba(20,23,28,0.9);
+    backdrop-filter: blur(12px);
+    display: flex; justify-content: space-around;
+    padding: 8px 0 14px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .tab { font-size: 10px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .tab.active { color: var(--accent); }
+  .tab svg { width: 20px; height: 20px; }
+
+  .screen {
+    height: 100%;
+    display: flex; flex-direction: column;
+    padding: 4px 6px 70px;
+    overflow: hidden;
+  }
+  .screen h3 {
+    font-size: 22px; margin: 6px 4px 14px; letter-spacing: -0.01em;
+  }
+
+  .card {
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  .row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+  .row + .row { border-top: 1px solid rgba(255,255,255,0.05); }
+  .muted { color: var(--muted); font-size: 12px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .pill {
+    font-size: 10px; padding: 2px 8px;
+    background: rgba(79,142,247,0.15); color: var(--accent);
+    border-radius: 999px;
+  }
+  .bar {
+    display: flex; gap: 3px; margin-top: 6px;
+  }
+  .bar span {
+    height: 8px; border-radius: 2px; display: block;
+    background: var(--accent);
+  }
+  .bar .b { background: var(--green); }
+  .bar .l { background: var(--purple); }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    background: var(--accent);
+    color: white;
+    margin-top: 8px;
+  }
+  .btn.secondary { background: rgba(255,255,255,0.06); color: var(--text); font-weight: 500; }
+  .btn.danger { background: rgba(247,108,108,0.15); color: var(--red); }
+
+  /* Timer ring */
+  .ring-wrap { display: flex; justify-content: center; padding: 12px 0; }
+  .ring { position: relative; width: 200px; height: 200px; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring .time {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .ring .time b {
+    font-size: 40px; font-weight: 600; font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+  }
+  .ring .time .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .controls { display: flex; gap: 8px; margin: 8px 0; }
+  .controls .btn { flex: 1; padding: 10px; margin: 0; }
+
+  .step { display:flex; align-items:center; gap:8px; padding: 6px 0; font-size: 13px; }
+  .step .idx { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--muted); flex-shrink:0; }
+  .step.done .idx { background: var(--accent); border-color: var(--accent); }
+  .step.active .idx { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px rgba(79,142,247,0.2); }
+  .step .t { margin-left:auto; color: var(--muted); font-feature-settings: "tnum"; font-size: 12px; }
+
+  .check {
+    display:flex; align-items:center; gap:10px; padding: 6px 0; font-size: 13px;
+  }
+  .check .box { width: 16px; height: 16px; border: 1.5px solid var(--muted); border-radius: 4px; flex-shrink:0; }
+  .check.done .box { background: var(--accent); border-color: var(--accent); }
+  .check.done .t { text-decoration: line-through; color: var(--muted); }
+
+  .limit {
+    font-size: 11px; color: var(--amber);
+    background: rgba(247,184,79,0.1);
+    padding: 6px 10px; border-radius: 8px; margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+  <h1>Pomodoro Focus — UI mockups</h1>
+  <p style="color: var(--muted); max-width: 720px;">
+    Static HTML/CSS mockups of every main screen in the SwiftUI app. Open this
+    file in a browser to visually scroll through the flows. The real app lives
+    next to this in <code>PomodoroFocus/iOS</code> and <code>PomodoroFocus/Watch</code>.
+  </p>
+
+  <h2>iPhone</h2>
+  <div class="grid">
+
+    <!-- 1. Timer Home -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● ▂▃▆</span></div>
+        <div class="screen">
+          <h3>Focus</h3>
+          <div class="card">
+            <div class="muted" style="margin-bottom:4px;">PRESET</div>
+            <div class="row" style="padding-top:0;">
+              <b style="flex:1;">Deep Work 45+25</b>
+              <span class="muted">2h 40m</span>
+            </div>
+            <div class="bar">
+              <span style="width:45px;"></span><span class="b" style="width:10px;"></span>
+              <span style="width:45px;"></span><span class="b" style="width:10px;"></span>
+              <span style="width:25px;"></span><span class="b" style="width:5px;"></span>
+              <span style="width:25px;"></span><span class="l" style="width:20px;"></span>
+            </div>
+            <div class="muted" style="margin-top:6px;">4 focus blocks · long break at end</div>
+          </div>
+          <div class="card">
+            <div class="muted" style="margin-bottom:8px;">PROJECT</div>
+            <div class="row" style="padding:2px 0;">
+              <span class="dot" style="background:var(--accent);"></span>
+              <span>iOS app</span>
+              <span class="pill" style="margin-left:auto;">selected</span>
+            </div>
+            <div class="row"><span class="dot" style="background:var(--green);"></span><span>Writing</span></div>
+            <div class="row"><span class="dot" style="background:var(--red);"></span><span>Thesis</span></div>
+          </div>
+          <div class="btn">▶  Start focus session</div>
+        </div>
+        <div class="tabbar">
+          <div class="tab active">⏱<span>Focus</span></div>
+          <div class="tab">▥<span>Presets</span></div>
+          <div class="tab">◫<span>Projects</span></div>
+          <div class="tab">☀<span>Routines</span></div>
+          <div class="tab">⚙<span>Settings</span></div>
+        </div>
+      </div>
+      <div class="caption">Home — pick preset + project, hit start.</div>
+    </div>
+
+    <!-- 2. Active Session -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="status"><span>9:52</span><span>●●● ▂▃▆</span></div>
+        <div class="screen">
+          <div style="text-align:center; margin-top:6px;">
+            <div style="font-weight:600;">Deep Work 45+25 · Focus</div>
+            <div class="muted" style="margin-top:2px;">
+              <span class="dot" style="display:inline-block; background: var(--accent); width:8px; height:8px; margin-right:4px;"></span>
+              iOS app
+            </div>
+          </div>
+          <div class="ring-wrap">
+            <div class="ring">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--ring-track)" stroke-width="7"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent)"
+                  stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="282.6" stroke-dashoffset="85"/>
+              </svg>
+              <div class="time"><b>32:14</b><span class="sub">Running · tick-tock ♪</span></div>
+            </div>
+          </div>
+          <div class="controls">
+            <div class="btn danger">■ Stop</div>
+            <div class="btn">❚❚ Pause</div>
+            <div class="btn secondary">⏭ Skip</div>
+          </div>
+          <div class="card" style="margin-top:4px;">
+            <div class="muted" style="margin-bottom:4px;">QUEUE</div>
+            <div class="step done"><span class="idx"></span>Focus<span class="t">45:00</span></div>
+            <div class="step done"><span class="idx"></span>Break<span class="t">10:00</span></div>
+            <div class="step active"><span class="idx"></span>Focus<span class="t">45:00</span></div>
+            <div class="step"><span class="idx"></span>Break<span class="t">10:00</span></div>
+            <div class="step"><span class="idx"></span>Focus<span class="t">25:00</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">Active session — ring, controls, queue, project chip, ambient sound label.</div>
+    </div>
+
+    <!-- 3. Preset editor -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● ▂▃▆</span></div>
+        <div class="screen">
+          <h3>Edit preset</h3>
+          <div class="card">
+            <div class="muted" style="margin-bottom:6px;">NAME</div>
+            <div style="font-weight:600;">Deep Work 45+25</div>
+          </div>
+          <div class="card">
+            <div class="muted" style="margin-bottom:8px;">STEPS</div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--accent);"></span>
+              <span>Focus · <b>45 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--green);"></span>
+              <span>Break · <b>10 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--accent);"></span>
+              <span>Focus · <b>45 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--green);"></span>
+              <span>Break · <b>5 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--accent);"></span>
+              <span>Focus · <b>25 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--accent);"></span>
+              <span>Focus · <b>25 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+            <div class="row" style="padding:6px 0;">
+              <span class="dot" style="background:var(--purple);"></span>
+              <span>Long break · <b>20 min</b></span>
+              <span class="muted" style="margin-left:auto;">−  +</span>
+            </div>
+          </div>
+          <div class="btn secondary">+ Add focus</div>
+          <div class="btn secondary">+ Add break</div>
+        </div>
+      </div>
+      <div class="caption">Preset editor — each step has its own type + duration. The 45/45/25/25 example.</div>
+    </div>
+
+    <!-- 4. Projects list -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● ▂▃▆</span></div>
+        <div class="screen">
+          <h3>Projects</h3>
+          <div class="limit">⚠  5 / 5 active — archive one to add another</div>
+          <div class="card">
+            <div class="row"><span class="dot" style="background:var(--accent);"></span><span>iOS app</span><span class="muted" style="margin-left:auto;">12h</span></div>
+            <div class="row"><span class="dot" style="background:var(--green);"></span><span>Writing</span><span class="muted" style="margin-left:auto;">4h</span></div>
+            <div class="row"><span class="dot" style="background:var(--red);"></span><span>Thesis</span><span class="muted" style="margin-left:auto;">21h</span></div>
+            <div class="row"><span class="dot" style="background:var(--amber);"></span><span>Reading</span><span class="muted" style="margin-left:auto;">3h</span></div>
+            <div class="row"><span class="dot" style="background:var(--purple);"></span><span>Guitar</span><span class="muted" style="margin-left:auto;">6h</span></div>
+          </div>
+          <div class="card">
+            <div class="muted" style="margin-bottom:6px;">ARCHIVED</div>
+            <div class="row"><span class="dot" style="background:#555;"></span><span style="color:var(--muted);">Side gig</span></div>
+            <div class="row"><span class="dot" style="background:#555;"></span><span style="color:var(--muted);">Newsletter</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">Projects — hard cap of 5 active, enforced in AppStore.addProject.</div>
+    </div>
+
+    <!-- 5. Routine run -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="status"><span>6:02</span><span>●●● ▂▃▆</span></div>
+        <div class="screen">
+          <div style="text-align:center;">
+            <div style="font-weight:600;">Morning</div>
+            <div class="muted">☀ routine</div>
+          </div>
+          <div class="ring-wrap" style="padding:6px 0;">
+            <div class="ring" style="width:170px; height:170px;">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--ring-track)" stroke-width="7"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="var(--amber)"
+                  stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="282.6" stroke-dashoffset="170"/>
+              </svg>
+              <div class="time"><b style="font-size:30px;">14:22</b><span class="sub">of 20:00</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="muted" style="margin-bottom:4px;">CHECKLIST</div>
+            <div class="check done"><span class="box"></span><span class="t">Drink a glass of water</span></div>
+            <div class="check done"><span class="box"></span><span class="t">5 minutes of stretching</span></div>
+            <div class="check"><span class="box"></span><span class="t">Cold face rinse</span></div>
+            <div class="check"><span class="box"></span><span class="t">Review top 3 priorities</span></div>
+            <div class="check"><span class="box"></span><span class="t">Silent breathing — 2 min</span></div>
+          </div>
+          <div class="controls"><div class="btn danger">■ End</div><div class="btn">❚❚ Pause</div></div>
+        </div>
+      </div>
+      <div class="caption">Morning routine — checklist stays visible on screen while the timer counts.</div>
+    </div>
+
+    <!-- 6. Settings -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="status"><span>9:41</span><span>●●● ▂▃▆</span></div>
+        <div class="screen">
+          <h3>Settings</h3>
+          <div class="card">
+            <div class="muted" style="margin-bottom:8px;">AMBIENT SOUND</div>
+            <div class="row"><span>Tick-tock clock</span><span class="pill" style="margin-left:auto;">on</span></div>
+            <div class="row"><span style="color:var(--muted);">Gentle rain</span></div>
+            <div class="row"><span style="color:var(--muted);">Brown noise</span></div>
+            <div class="row"><span style="color:var(--muted);">Café hum</span></div>
+            <div class="row"><span style="color:var(--muted);">None</span></div>
+            <div style="margin-top:10px;">
+              <div class="muted" style="margin-bottom:4px;">Volume</div>
+              <div style="height:4px; background: rgba(255,255,255,0.1); border-radius:999px; overflow:hidden;">
+                <div style="width:60%; height:100%; background: var(--accent);"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="row"><span>Auto-start breaks</span><span class="pill" style="margin-left:auto;">on</span></div>
+            <div class="row"><span>Auto-start focus</span><span class="muted" style="margin-left:auto;">off</span></div>
+            <div class="row"><span>Haptics on transition</span><span class="pill" style="margin-left:auto;">on</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">Settings — ambient sound picker, volume, session behavior toggles.</div>
+    </div>
+
+  </div>
+
+  <h2>Apple Watch</h2>
+  <div class="grid">
+
+    <div class="phone-wrap">
+      <div class="watch">
+        <div class="inner">
+          <div class="muted" style="font-size:10px; text-align:center;">PRESETS</div>
+          <div style="font-size:12px; padding: 4px 2px; border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div style="font-weight:600;">Classic 25/5</div>
+            <div class="muted" style="font-size:10px;">4 focus · 2h 20m</div>
+          </div>
+          <div style="font-size:12px; padding: 4px 2px; background: rgba(79,142,247,0.12); border-radius:6px;">
+            <div style="font-weight:600; color: var(--accent);">Deep Work 45+25</div>
+            <div class="muted" style="font-size:10px;">4 focus · 2h 40m</div>
+          </div>
+          <div class="muted" style="font-size:10px; text-align:center; margin-top:auto;">ROUTINES</div>
+          <div style="font-size:11px; display:flex; justify-content:space-between;">
+            <span>☀ Morning</span><span class="muted">20m</span>
+          </div>
+        </div>
+      </div>
+      <div class="caption">Watch — scroll presets + routines, tap to pick.</div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="watch">
+        <div class="inner" style="align-items:center; justify-content:center;">
+          <div class="muted" style="font-size:10px;">Deep Work · Focus</div>
+          <div style="position:relative; width:110px; height:110px;">
+            <svg viewBox="0 0 100 100" style="transform: rotate(-90deg); width:100%; height:100%;">
+              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="6"/>
+              <circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent)"
+                stroke-width="6" stroke-linecap="round"
+                stroke-dasharray="282.6" stroke-dashoffset="85"/>
+            </svg>
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:600;">32:14</div>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:6px;">
+            <div class="btn danger" style="margin:0; padding:6px 10px; font-size:11px;">■</div>
+            <div class="btn" style="margin:0; padding:6px 10px; font-size:11px;">❚❚</div>
+            <div class="btn secondary" style="margin:0; padding:6px 10px; font-size:11px;">⏭</div>
+          </div>
+        </div>
+      </div>
+      <div class="caption">Watch — stop / pause / skip during a session. Synced via WatchConnectivity.</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
