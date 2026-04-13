@@ -15,6 +15,10 @@ final class AppStore: ObservableObject {
     /// The preset currently attached to the running/paused session, if any.
     @Published var activePreset: Preset?
     @Published var activeRoutine: Routine?
+    /// Ad-hoc checklist for the current preset session. Cleared when a new
+    /// session starts or when the user stops. Not persisted — routines use
+    /// their own stored tasks instead.
+    @Published var sessionTasks: [RoutineTask] = []
 
     private let storageURL: URL
     private var saveTask: Task<Void, Never>?

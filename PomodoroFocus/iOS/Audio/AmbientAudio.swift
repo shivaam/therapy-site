@@ -6,9 +6,17 @@ import Combine
 /// any loopable file dropped into iOS/Resources/Sounds (e.g. tick.caf).
 @MainActor
 final class AmbientAudio: ObservableObject {
+    @Published private(set) var isMuted: Bool = false
     private var player: AVAudioPlayer?
     private var currentSound: AmbientSound = .none
     private var volume: Double = 0.6
+
+    func setMuted(_ muted: Bool) {
+        isMuted = muted
+        player?.volume = muted ? 0 : Float(volume)
+    }
+
+    func toggleMuted() { setMuted(!isMuted) }
 
     /// Call when the user opens the app / session starts.
     func configureSession() {
@@ -26,6 +34,11 @@ final class AmbientAudio: ObservableObject {
     func start(_ sound: AmbientSound, volume: Double) {
         self.volume = volume
         self.currentSound = sound
+        if isMuted {
+            // Respect mute — load nothing; Unmuting will re-call start().
+            stop()
+            return
+        }
         guard let name = sound.fileName else {
             stop()
             return

@@ -32,6 +32,7 @@ final class TimerEngine: ObservableObject {
         guard let firstStep = preset.steps.first else { return }
         store.activePreset = preset
         store.activeRoutine = nil
+        store.sessionTasks = []
         let total = firstStep.durationSeconds
         store.timerState = TimerState(
             mode: .running,
@@ -50,6 +51,7 @@ final class TimerEngine: ObservableObject {
     func startRoutine(_ routine: Routine) {
         store.activeRoutine = routine
         store.activePreset = nil
+        store.sessionTasks = []
         let total = routine.totalSeconds
         store.timerState = TimerState(
             mode: .running,
@@ -91,6 +93,7 @@ final class TimerEngine: ObservableObject {
         store.timerState = .idle
         store.activePreset = nil
         store.activeRoutine = nil
+        store.sessionTasks = []
     }
 
     func skipStep() {

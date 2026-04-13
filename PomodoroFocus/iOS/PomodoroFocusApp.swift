@@ -58,6 +58,22 @@ struct PomodoroFocusApp: App {
                 .onChange(of: store.settings) { _, newSettings in
                     audio.apply(settings: newSettings)
                 }
+                .onChange(of: audio.isMuted) { _, muted in
+                    // If the user unmuted mid-session, resume playback for the
+                    // current focus / routine step.
+                    if !muted, store.timerState.mode == .running {
+                        let shouldPlay: Bool = {
+                            if store.activeRoutine != nil { return true }
+                            guard let preset = store.activePreset,
+                                  preset.steps.indices.contains(store.timerState.currentStepIndex) else { return false }
+                            return preset.steps[store.timerState.currentStepIndex].kind == .focus
+                        }()
+                        if shouldPlay {
+                            audio.start(store.settings.ambientSound,
+                                        volume: store.settings.ambientVolume)
+                        }
+                    }
+                }
         }
     }
 }
