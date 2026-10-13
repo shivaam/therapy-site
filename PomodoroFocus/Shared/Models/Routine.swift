@@ -1,8 +1,8 @@
 import Foundation
 
-/// A checklist-style timed routine (morning / night). Tasks are displayed
-/// during the run so the user can follow them while the timer ticks.
-struct Routine: Identifiable, Codable, Hashable {
+/// A single timed block with a checklist that stays on screen while it runs
+/// (morning / night routines).
+struct Routine: Identifiable, Hashable {
     enum Kind: String, Codable, CaseIterable, Identifiable {
         case morning
         case night
@@ -14,7 +14,7 @@ struct Routine: Identifiable, Codable, Hashable {
             switch self {
             case .morning: return "Morning"
             case .night: return "Night"
-            case .custom: return "Custom"
+            case .custom: return "Other"
             }
         }
 
@@ -22,7 +22,7 @@ struct Routine: Identifiable, Codable, Hashable {
             switch self {
             case .morning: return "sunrise.fill"
             case .night: return "moon.stars.fill"
-            case .custom: return "list.bullet.rectangle"
+            case .custom: return "checklist"
             }
         }
     }
@@ -32,17 +32,46 @@ struct Routine: Identifiable, Codable, Hashable {
     var kind: Kind
     var totalSeconds: Int
     var tasks: [RoutineTask]
+    var sounds: SoundChoice
 
     init(id: UUID = UUID(),
          name: String,
          kind: Kind,
          totalSeconds: Int,
-         tasks: [RoutineTask]) {
+         tasks: [RoutineTask],
+         sounds: SoundChoice = SoundChoice()) {
         self.id = id
         self.name = name
         self.kind = kind
         self.totalSeconds = totalSeconds
         self.tasks = tasks
+        self.sounds = sounds
+    }
+}
+
+extension Routine: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case id, name, kind, totalSeconds, tasks, sounds
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(UUID.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        kind = try c.decodeIfPresent(Kind.self, forKey: .kind) ?? .custom
+        totalSeconds = try c.decodeIfPresent(Int.self, forKey: .totalSeconds) ?? 600
+        tasks = try c.decodeIfPresent([RoutineTask].self, forKey: .tasks) ?? []
+        sounds = try c.decodeIfPresent(SoundChoice.self, forKey: .sounds) ?? SoundChoice()
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(name, forKey: .name)
+        try c.encode(kind, forKey: .kind)
+        try c.encode(totalSeconds, forKey: .totalSeconds)
+        try c.encode(tasks, forKey: .tasks)
+        try c.encode(sounds, forKey: .sounds)
     }
 }
 
@@ -66,10 +95,9 @@ extension Routine {
             totalSeconds: 20 * 60,
             tasks: [
                 .init(text: "Drink a glass of water"),
-                .init(text: "5 minutes of stretching"),
-                .init(text: "Cold face rinse"),
-                .init(text: "Review top 3 priorities"),
-                .init(text: "Silent breathing — 2 minutes"),
+                .init(text: "Stretch for 5 minutes"),
+                .init(text: "Pick today's top 3"),
+                .init(text: "Breathe for 2 minutes"),
             ]
         ),
         Routine(
@@ -77,11 +105,10 @@ extension Routine {
             kind: .night,
             totalSeconds: 15 * 60,
             tasks: [
-                .init(text: "Tidy desk"),
-                .init(text: "Brain dump tomorrow's tasks"),
-                .init(text: "Skincare"),
-                .init(text: "Read 5 pages"),
-                .init(text: "Lights out"),
+                .init(text: "Clear the desk"),
+                .init(text: "Brain-dump tomorrow's tasks"),
+                .init(text: "Phone on the charger, away from bed"),
+                .init(text: "Read a few pages"),
             ]
         ),
     ]

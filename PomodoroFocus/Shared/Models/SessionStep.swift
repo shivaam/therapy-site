@@ -1,7 +1,8 @@
 import Foundation
 
-/// A single step inside a preset. A step is either a focus block or a break.
-struct SessionStep: Identifiable, Codable, Hashable {
+/// One block in a running sequence. Derived from a preset's rounds rather than
+/// stored, so editing a preset can never leave the two out of sync.
+struct SessionStep: Identifiable, Hashable {
     enum Kind: String, Codable, CaseIterable, Identifiable {
         case focus
         case shortBreak
@@ -13,24 +14,17 @@ struct SessionStep: Identifiable, Codable, Hashable {
             switch self {
             case .focus: return "Focus"
             case .shortBreak: return "Break"
-            case .longBreak: return "Long Break"
+            case .longBreak: return "Long break"
             }
         }
+
+        var isBreak: Bool { self != .focus }
     }
 
-    var id: UUID
+    /// Position in the sequence — stable for a given preset.
+    var id: Int
     var kind: Kind
-    /// Duration in seconds. Stored this way so the Watch doesn't need to know about TimeInterval conventions.
     var durationSeconds: Int
-
-    init(id: UUID = UUID(), kind: Kind, durationSeconds: Int) {
-        self.id = id
-        self.kind = kind
-        self.durationSeconds = durationSeconds
-    }
-
-    var durationMinutes: Int {
-        get { durationSeconds / 60 }
-        set { durationSeconds = max(1, newValue) * 60 }
-    }
+    /// 1-based round this step belongs to.
+    var round: Int
 }
